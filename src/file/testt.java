@@ -23,24 +23,26 @@ public class testt {
 		String restApiKey = "9fe52013af1c347f70a2ce56386eabbf";  // 개인 rest-api 키 입력
 
 		try {
-			String text = URLEncoder.encode("펭수", "UTF-8");
+			String text = URLEncoder.encode("펭수", "UTF-8"); // 검색어
 			String postParams = "src_lang=kr&target_lang=en&query=" + text;  // 파라미터
 			String apiURL = "https://dapi.kakao.com/v2/search/image?" + postParams;
 			URL url = new URL(apiURL);
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();
-			String userCredentials = restApiKey;
-			String basicAuth = "KakaoAK " + userCredentials;
+			String basicAuth = "KakaoAK " + restApiKey;
 			con.setRequestProperty("Authorization", basicAuth);
 			
 			// 이건 필요 유무 몰라서 빼놈
-			//con.setRequestMethod("GET");
+			//con.setRequestMethod("GET");  // 웹 서버로부터 리소스를 가져옴
 			//con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			//con.setRequestProperty("charset", "utf-8");
 			//con.setUseCaches(false);
-			//con.setDoInput(true);
-			//con.setDoOutput(true);
+			//con.setDoInput(true); // 서버로부터 응답을 받겠다는 옵션
+			con.setDoOutput(true);
+			
+			// 실제 서버로 request 요청하는 부분
 			int responseCode = con.getResponseCode();
 			System.out.println("responseCode >> " + responseCode);
+			
 			BufferedReader br;
 			if(responseCode == 200) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -48,6 +50,7 @@ public class testt {
 			else {
 				br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 			}
+			
 			String inputLine;
 			StringBuffer res = new StringBuffer();
 			while ((inputLine = br.readLine()) != null) {
@@ -55,7 +58,6 @@ public class testt {
 				
 			}
 			br.close();
-			//System.out.println("응답결과>> " + res.toString());
 
 			// 가장 큰 JSONObject를 가져옵니다.
 		    JSONObject jObject = new JSONObject(res.toString());
@@ -65,8 +67,6 @@ public class testt {
 		    String savePath = "C:\\dream_coding\\img\\"; // 이미지 저장 파일
 		    String fileFormat = "jpg";
 
-				
-			
 		    // 배열의 모든 아이템을 출력합니다.
 		    for (int i = 0; i < jArray.length(); i++) {
 		        JSONObject obj = jArray.getJSONObject(i);
