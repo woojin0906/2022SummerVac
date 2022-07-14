@@ -21,7 +21,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-// rest api, 
+// rest_api, code
 @Service
 public class KakaoAPI {
 
@@ -41,19 +41,19 @@ public class KakaoAPI {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // http 통신을 가능하게 해주는 클래스
 
 			// POST 요청을 위해 기본값이 false인 setDoOutput을 true로 변경
-			conn.setRequestMethod("POST"); // 폼에 입력된 내용을 서버로 전송
-			conn.setDoOutput(true); // post 데이터를 넘겨주겠다는 옵션
+			// 폼에 입력된 내용을 서버로 전송
+			conn.setRequestMethod("POST");
+			conn.setDoOutput(true);
 
-			// POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
-			// outputStreamWriter : 문자 스트림에서 바이트 스트림으로 연결되는 다리
+			// POST 요청에 필요로 요구하는 파라미터 사용자 토큰 발급을 위한 필수 파라미터 스트림을 통해 전송
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			StringBuilder sb = new StringBuilder(); // 문자열끼리 연결해주는 클래스
 			sb.append("grant_type=authorization_code");  // append를 사용해 더해야하는 문자열 입력
 			sb.append("&client_id=9fe52013af1c347f70a2ce56386eabbf"); // rest_api 앱 키 입력
 			sb.append("&redirect_uri=https://localhost.com");
-			sb.append("&code=" + authorize_code); // 발급받은 code 입력
+			sb.append("&code=" + authorize_code);
 			
-			bw.write(sb.toString());  // StringBuilder는 출력 시 toString()으로 문자열로 변환해줘야함
+			bw.write(sb.toString());  // 출력 시 toString()으로 문자열로 변환해줘야함
 			bw.flush();  // 현재 버퍼에 저장되어 있는 내용을 클라이언트로 전송하고 버퍼를 비움
 
 			// 결과 코드가 200이라면 성공(실제 서버로 request 요청하는 부분)
@@ -72,8 +72,8 @@ public class KakaoAPI {
 			
 
 			// Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
-			JsonParser parser = new JsonParser();
-			JsonElement element = parser.parse(result);
+			JsonParser parser = new JsonParser(); // 파싱 클래스 
+			JsonElement element = parser.parse(result); // 각 토큰을 element로 분리
 			access_Token = element.getAsJsonObject().get("access_token").getAsString(); // getAsJsonObject을 이용해 원하는 타입의 값을 받아옴
 			refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
 			System.out.println("access_token : " + access_Token);
@@ -83,8 +83,6 @@ public class KakaoAPI {
 			save_tokens(result);
 			// 토큰 읽기
 			load_tokens("kakao_token");
-			// 토큰 갱신
-			update_tokens(refresh_Token);
 			
 			br.close();
 			bw.close();
@@ -100,12 +98,11 @@ public class KakaoAPI {
 	// 토큰 저장하는 메서드
 	public void save_tokens(String tokens) throws IOException {
 		System.out.println("save_tokens 메서드");
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();    //gson을 사용하기 위해 이처럼 클래스 선언
-		// Java 객체를 JSON 표현으로 변환하는 데 사용할 수 있는 Java 라이브러리
+		
 		// java 객체 -> json 변환 
 		// 그리고 json -> java 객체로 변환해주는 라이브러리
-		// 자동 개행 및 줄 바꿈
-		// Json key, value 추가
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();    //gson을 사용하기 위해 이처럼 클래스 선언
+
 		JsonObject kakao_token = new JsonObject();
 		kakao_token.addProperty("filename", "kakao_token"); // 데이터를 넣어주는 것
 		// filename이라는 이름(별명)으로 kakao_token의 값을 넣는 것
@@ -113,7 +110,7 @@ public class KakaoAPI {
 
 		// JsonObject를 파일에 쓰기
 		FileWriter fw = new FileWriter("c:\\temp\\kakaoAPI_Tokens.json");
-		gson.toJson(kakao_token, fw); // JsonObject -> JSON 문자열로 변경( 객체를 json 형식의 string으로 변환)
+		gson.toJson(kakao_token, fw); // JsonObject -> JSON 문자열로 변경(객체를 json 형식의 string으로 변환)
 		fw.flush();
 		fw.close();
 
@@ -127,8 +124,8 @@ public class KakaoAPI {
 
 		// Json 파일 읽어서, Lecture 객체로 변환
 		Gson gson = new Gson();
-		JsonObject obj = gson.fromJson(reader, JsonObject.class);  // reader는 키로 키에 해당하는 것만 매핑되어 값이 삽입됨
-
+		JsonObject obj = gson.fromJson(reader, JsonObject.class);
+		// json 형태의 파일을 변환할 클래스(JsonObject)로 변환하여 전달
 		return obj;
 	}
 
@@ -149,7 +146,7 @@ public class KakaoAPI {
 			StringBuilder sb = new StringBuilder();
 			sb.append("grant_type=refresh_token");
 			sb.append("&client_id=9fe52013af1c347f70a2ce56386eabbf"); // rest_api 앱 키 입력
-			sb.append("&refresh_token=" + refresh_Token); // 발급받은 code 입력
+			sb.append("&refresh_token=" + refresh_Token);
 			bw.write(sb.toString());
 			bw.flush();
 
@@ -228,6 +225,6 @@ public class KakaoAPI {
 	public static void main(String[] args) throws JSONException {
 		// 카카오톡 인증 코드 메서드 매개변수에 입력
 		KakaoAPI kakaoAPI = new KakaoAPI();
-		kakaoAPI.getAccessToken("MYicL6ZJ4rWhShwKWsLYnRlTe0bqxnP2RxppS52RvZKGosOgp5ruwDE1J0HeUe3DncwGswo9cxcAAAGB-28e6Q");
+		kakaoAPI.getAccessToken("P12vFpNyIYnC2ZjxqAmWvudQChlpYaPVXczvFLFUOFnKw3QUcTWPjmjZyvCmMFjodmN8dwopyNgAAAGB_CmoVA");
 	}
 }
