@@ -41,11 +41,12 @@ public class KakaoAPI {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // http 통신을 가능하게 해주는 클래스
 
 			// POST 요청을 위해 기본값이 false인 setDoOutput을 true로 변경
-			// 폼에 입력된 내용을 서버로 전송
+			// 폼에 입력된 내용을 서버로 전송 (post는 get 방식과 달리 주소 뒤에 파라미터 포함 X)
+			// https://kauth.kakao.com/oauth/authorize?client_id=9fe52013af1c347f70a2ce56386eabbf
 			conn.setRequestMethod("POST");
 			conn.setDoOutput(true);
 
-			// POST 요청에 필요로 요구하는 파라미터 사용자 토큰 발급을 위한 필수 파라미터 스트림을 통해 전송
+			// POST 요청에 필요로 요구하는 사용자 토큰 발급을 위한 필수 파라미터 스트림을 통해 전송
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			StringBuilder sb = new StringBuilder(); // 문자열끼리 연결해주는 클래스
 			sb.append("grant_type=authorization_code");  // append를 사용해 더해야하는 문자열 입력
@@ -122,7 +123,6 @@ public class KakaoAPI {
 		// FileReader 생성
 		Reader reader = new FileReader("c:\\temp\\kakaoAPI_Tokens.json");
 
-		// Json 파일 읽어서, Lecture 객체로 변환
 		Gson gson = new Gson();
 		JsonObject obj = gson.fromJson(reader, JsonObject.class);
 		// json 형태의 파일을 변환할 클래스(JsonObject)로 변환하여 전달
