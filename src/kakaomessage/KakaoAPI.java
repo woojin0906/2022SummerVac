@@ -174,8 +174,10 @@ public class KakaoAPI {
 
 		System.out.println("---- Input Data Finish ----");
 
+		// HTTP요청 또는 응답에 해당하는 HttpHeader와 HttpBody를 포함하는 클래스
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, header);
 
+		// 사용자의 HttpRequest에 대한 응답 데이터를 포함하는 클래스
 		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 		System.out.println("finish");
 		System.out.println(response);
