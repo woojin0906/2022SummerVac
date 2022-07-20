@@ -25,9 +25,9 @@ import java.util.HashMap;
 @Service
 public class KakaoAPI {
 
-	static String url;
-	static RestTemplate restTemplate = new RestTemplate(); // Spring에서 지원하는 객체로 간편하게 Rest 방식 API를 호출할 수 있는 Spring 내장 클래스
-	static HttpHeaders header = new HttpHeaders();
+	 String url;
+	 RestTemplate restTemplate = new RestTemplate(); // Spring에서 지원하는 객체로 간편하게 Rest 방식 API를 호출할 수 있는 Spring 내장 클래스
+	 HttpHeaders header = new HttpHeaders();
 
 	// 토큰 발급
 	public void getAccessToken(String authorize_code) throws JSONException {
@@ -161,7 +161,7 @@ public class KakaoAPI {
 	}
 
 	// 나에게 카카오톡 메시지 보내는 메서드
-	public static String sendMessageToMe(String access_Token) throws JSONException, IOException { 
+	public  String sendMessageToMe(String access_Token) throws JSONException, IOException { 
 		url = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
 		header.add("Authorization", "Bearer " + access_Token);
 
@@ -186,7 +186,7 @@ public class KakaoAPI {
 	}
 
 	// 메시지 내용 입력하는 메서드
-	private static String buildTemplateObject() throws JSONException {
+	private String buildTemplateObject() throws JSONException {
 		System.out.println("buildTemplateObject 메시지 내용 보내는 메서드");
 		JSONObject templateObject = new JSONObject();  
 		JSONObject urlObject = new JSONObject();    // 주소
@@ -224,7 +224,7 @@ public class KakaoAPI {
 		return templateObject.toString();
 	}
 
-	public static void main(String[] args) throws JSONException {
+	public void main(String[] args) throws JSONException {
 		// 카카오톡 인증 코드 메서드 매개변수에 입력
 		KakaoAPI kakaoAPI = new KakaoAPI();
 		kakaoAPI.getAccessToken("P12vFpNyIYnC2ZjxqAmWvudQChlpYaPVXczvFLFUOFnKw3QUcTWPjmjZyvCmMFjodmN8dwopyNgAAAGB_CmoVA");
